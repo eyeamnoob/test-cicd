@@ -12,19 +12,17 @@ jobs:
             - uses: actions/setup-node@v3
               with:
                   node-version: "18"
-            - name: update-liara
+            - name: deploy on master
               env:
                   LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
-              run: |
-                  npm i -g @liara/cli@4
-                  liara deploy --app="test-js" --api-token="$LIARA_TOKEN" --port 3000 --detach
-            - name: deploy on master
               if: ${{ github.ref == 'refs/heads/master' }}
               run: |
                   npm i -g @liara/cli@4
                   liara deploy --app="test-js" --api-token="$LIARA_TOKEN" --port 3000 --detach
             - name: deploy on test
-              if: ${{ github.ref == 'refs/heads/test-branch' }}
+              env:
+                  LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
+              if: ${{ github.ref == 'refs/heads/test' }}
               run: |
                   npm i -g @liara/cli@4
                   liara deploy --app="test-js" --api-token="$LIARA_TOKEN" --port 3000 --detach
