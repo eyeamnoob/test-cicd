@@ -3,6 +3,7 @@ on:
     push:
         branches:
             - master
+            - test
 jobs:
     deploy:
         runs-on: ubuntu-latest
@@ -25,4 +26,4 @@ jobs:
               if: ${{ github.ref == 'refs/heads/test' }}
               run: |
                   npm i -g @liara/cli@4
-                  liara deploy --app="test-js" --api-token="$LIARA_TOKEN" --port 3000 --detach
+                  liara deploy --app="test-branch" --api-token="$LIARA_TOKEN" --port 3000 --detach
