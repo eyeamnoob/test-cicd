@@ -18,3 +18,13 @@ jobs:
               run: |
                   npm i -g @liara/cli@4
                   liara deploy --app="test-js" --api-token="$LIARA_TOKEN" --port 3000 --detach
+            - name: deploy on master
+                    if: ${{ github.ref == 'refs/heads/master' }}
+                    run: |
+                      npm i -g @liara/cli@4
+                      liara deploy --app="test-js" --api-token="$LIARA_TOKEN" --port 3000 --detach
+                  - name: deploy on test
+                    if: ${{ github.ref == 'refs/heads/test-branch' }}
+                    run: |
+                      npm i -g @liara/cli@4
+                      liara deploy --app="test-js" --api-token="$LIARA_TOKEN" --port 3000 --detach
