@@ -1,29 +1,30 @@
 name: CD-Liara
-on:
-    push:
-        branches:
-            - master
-            - test
-jobs:
-    deploy:
-        runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3
-              with:
-                  node-version: "18"
-            - name: deploy on master
-              env:
-                  LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
-              if: ${{ github.ref == 'refs/heads/master' }}
-              run: |
-                  npm i -g @liara/cli@4
-                  liara deploy --app="test-js" --api-token="$LIARA_TOKEN" --port 3000 --detach
-            - name: deploy on test
-              env:
-                  LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
-              if: ${{ github.ref == 'refs/heads/test' }}
-              run: |
-                  npm i -g @liara/cli@4
-                  liara deploy --app="test-branch" --api-token="$LIARA_TOKEN" --port 3000 --detach
+on:
+  push:
+    branches:
+      - master
+      - test
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install Liara CLI
+        run: npm i -g @liara/cli@4
+
+      - name: Deploy
+        env:
+          LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
+        run: |
+          if [ ${{ github.ref }} == 'refs/heads/master' ]; then
+            liara deploy --app="test-js" --api-token="$LIARA_TOKEN" --port 3000 --detach
+          elif [ ${{ github.ref }} == 'refs/heads/test' ]; then
+            liara deploy --app="test-branch" --api-token="$LIARA_TOKEN" --port 3000 --detach
+          fi
